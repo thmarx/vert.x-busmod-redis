@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vertx.tests.busmods.redisclient;
+package org.vertx.mods.redisclient;
 
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.SimpleHandler;

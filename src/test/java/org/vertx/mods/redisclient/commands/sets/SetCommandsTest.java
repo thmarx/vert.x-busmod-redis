@@ -1,4 +1,4 @@
-package vertx.tests.busmods.redisclient.commands.sets;
+package org.vertx.mods.redisclient.commands.sets;
 
 import static org.junit.Assert.*;
 
@@ -15,11 +15,11 @@ import org.vertx.mods.redis.CommandContext;
 import org.vertx.mods.redis.commands.CommandException;
 import org.vertx.mods.redis.commands.lists.LSetCommand;
 import org.vertx.mods.redis.commands.sets.*;
+import org.vertx.mods.redisclient.commands.CommandTest;
 
 
 import redis.clients.jedis.Jedis;
-import vertx.tests.busmods.redisclient.commands.CommandTest;
-import vertx.tests.busmods.redisclient.commands.CommandTest.TestMessage;
+
 
 public class SetCommandsTest extends CommandTest {
 

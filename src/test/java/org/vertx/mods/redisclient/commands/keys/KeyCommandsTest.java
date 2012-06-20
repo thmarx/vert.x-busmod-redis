@@ -1,4 +1,4 @@
-package vertx.tests.busmods.redisclient.commands.keys;
+package org.vertx.mods.redisclient.commands.keys;
 
 import static org.junit.Assert.*;
 
@@ -34,9 +34,9 @@ import org.vertx.mods.redis.commands.strings.MSetCommand;
 import org.vertx.mods.redis.commands.strings.SetCommand;
 import org.vertx.mods.redis.commands.strings.SetRangeCommand;
 import org.vertx.mods.redis.commands.strings.StrLenCommand;
+import org.vertx.mods.redisclient.commands.CommandTest;
 
 import redis.clients.jedis.Jedis;
-import vertx.tests.busmods.redisclient.commands.CommandTest;
 
 public class KeyCommandsTest extends CommandTest {
 

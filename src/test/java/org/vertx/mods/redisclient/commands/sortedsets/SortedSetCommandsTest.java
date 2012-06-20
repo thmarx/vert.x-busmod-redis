@@ -1,4 +1,4 @@
-package vertx.tests.busmods.redisclient.commands.sortedsets;
+package org.vertx.mods.redisclient.commands.sortedsets;
 
 import static org.junit.Assert.*;
 
@@ -21,10 +21,9 @@ import org.vertx.mods.redis.commands.sets.SIsMemberCommand;
 import org.vertx.mods.redis.commands.sets.SMembersCommand;
 import org.vertx.mods.redis.commands.sets.SMoveCommand;
 import org.vertx.mods.redis.commands.sortedsets.*;
+import org.vertx.mods.redisclient.commands.CommandTest;
 
 import redis.clients.jedis.Jedis;
-import vertx.tests.busmods.redisclient.commands.CommandTest;
-import vertx.tests.busmods.redisclient.commands.CommandTest.TestMessage;
 
 public class SortedSetCommandsTest extends CommandTest {
 

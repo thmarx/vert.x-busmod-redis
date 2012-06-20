@@ -1,4 +1,4 @@
-package vertx.tests.busmods.redisclient.commands.hashes;
+package org.vertx.mods.redisclient.commands.hashes;
 
 import static org.junit.Assert.*;
 
@@ -14,10 +14,9 @@ import org.vertx.java.core.json.JsonObject;
 import org.vertx.mods.redis.CommandContext;
 import org.vertx.mods.redis.commands.CommandException;
 import org.vertx.mods.redis.commands.hashes.*;
-import org.vertx.mods.redis.commands.keys.KeysCommand;
+import org.vertx.mods.redisclient.commands.CommandTest;
 
 import redis.clients.jedis.Jedis;
-import vertx.tests.busmods.redisclient.commands.CommandTest;
 
 public class HashCommandsTest extends CommandTest {
 

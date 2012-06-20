@@ -1,4 +1,4 @@
-package vertx.tests.busmods.redisclient.commands;
+package org.vertx.mods.redisclient.commands;
 
 import java.util.UUID;
 

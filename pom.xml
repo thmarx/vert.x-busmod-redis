@@ -40,13 +40,13 @@
         <dependency>
             <groupId>org.vertx</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0.final</version>
+            <version>1.1.0.final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.vertx</groupId>
             <artifactId>platform</artifactId>
-            <version>1.0.0.final</version>
+            <version>1.1.0.final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>org.vertx</groupId>
             <artifactId>testframework</artifactId>
-            <version>1.0.0.final</version>
+            <version>1.1.0.final</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
