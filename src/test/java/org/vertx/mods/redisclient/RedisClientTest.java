@@ -16,13 +16,22 @@
 
 package org.vertx.mods.redisclient;
 
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.SimpleHandler;
-import org.vertx.java.core.Vertx;
-import org.vertx.java.core.eventbus.EventBus;
-import org.vertx.java.core.eventbus.Message;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.framework.TestClientBase;
+import org.vertx.java.framework.TestBase;
+import org.vertx.mods.redis.CommandContext;
+import org.vertx.mods.redis.RedisClient;
+import org.vertx.mods.redis.commands.CommandException;
+import org.vertx.mods.redis.commands.strings.GetCommand;
+import org.vertx.mods.redisclient.commands.CommandTest;
+import org.vertx.mods.redisclient.commands.CommandTest.TestMessage;
+
+import redis.clients.jedis.Jedis;
 
 /**
  * 
@@ -31,54 +40,41 @@ import org.vertx.java.framework.TestClientBase;
  * 
  * @author <a href="http://marx-labs.de">Thorsten Marx</a>
  */
-public class RedisClientTest extends TestClientBase {
+public class RedisClientTest extends CommandTest {
 
-	private EventBus eb;
-
-	private String persistorID;
+	public static RedisClient client = new RedisClient();
+	static Jedis jedis; 
+	static CommandContext context;
 	
-	public RedisClientTest() {
-		vertx = Vertx.newVertx();
+	@BeforeClass
+	public static void setUp () {
+		jedis = new Jedis("localhost");
+		
+		client.setClient(jedis);
 	}
 
-	@Override
-	public void start() {
-		super.start();
-		eb = vertx.eventBus();
-		JsonObject config = new JsonObject();
-		config.putString("address", "test.persistor");
-
-		persistorID = container.deployVerticle("redis-client", config, 1,
-				new SimpleHandler() {
-					public void handle() {
-						tu.appReady();
-					}
-				});
+	@AfterClass
+	public static void tearDown() throws Exception {
+		jedis.quit();
 	}
-
-	@Override
-	public void stop() {
-		super.stop();
-	}
-
-	public void testClient() throws Exception {
-
-		// First delete everything
-		JsonObject json = new JsonObject().putString("command", "set")
-				.putString("key", "name").putString("value", "thorsten");
-
-		eb.send("test.persistor", json, new Handler<Message<JsonObject>>() {
-			public void handle(Message<JsonObject> reply) {
-				tu.azzert("ok".equals(reply.body.getString("status")));
-			}
-		});
-
-		json = new JsonObject().putString("command", "exists")
-				.putString("key", "name");
-		eb.send("test.persistor", json, new Handler<Message<JsonObject>>() {
-			public void handle(Message<JsonObject> reply) {
-				tu.azzert("true".equals(reply.body.getString("value")));
-			}
-		});
+	
+	@Test
+	public void testGetCommand () throws CommandException {
+		String key = getUniqueString();
+		String value = getUniqueString();
+		
+		jedis.set(key, value);
+		
+		JsonObject request = new JsonObject();
+		request.putString("key", key);
+		request.putString("command", "get");
+		
+		TestMessage msg = getMessage(request);
+		
+		client.handle(msg);
+		
+		String reply = msg.reply.getString("value");
+		assertNotNull(reply);
+		assertEquals(value, reply);
 	}
 }

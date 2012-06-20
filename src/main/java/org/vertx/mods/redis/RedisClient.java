@@ -16,10 +16,10 @@
 
 package org.vertx.mods.redis;
 
-import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.vertx.java.busmods.BusModBase;
 import org.vertx.java.core.Handler;
@@ -43,24 +43,46 @@ public class RedisClient extends BusModBase implements
 		Handler<Message<JsonObject>>, CommandContext {
 
 	private static final Map<String, Command> commands = new HashMap<String, Command>();
-	static {
-		find("org.vertx.mods.redis.commands.strings");
-		find("org.vertx.mods.redis.commands.keys");
-		find("org.vertx.mods.redis.commands.hashes");
-		find("org.vertx.mods.redis.commands.lists");
-		find("org.vertx.mods.redis.commands.sets");
-		find("org.vertx.mods.redis.commands.sortedsets");
-		find("org.vertx.mods.redis.commands.connection"); 
-	}
 
+	static {
+		if (commands.isEmpty()) {
+			ServiceLoader<Command> commandloader = ServiceLoader.load(Command.class);
+			Iterator<Command> iter = commandloader.iterator(); 
+			while (iter.hasNext()) {
+				Command c = iter.next();
+				commands.put(c.getName(), c);
+			}
+		}
+	}
+	
 	private String address;
 	private String host;
 	private int port;
 	private Jedis redis;
 
+	@Override
 	public void start() {
 		super.start();
+		
+		if (commands.isEmpty()) {
+			ServiceLoader<Command> commandloader = ServiceLoader.load(Command.class, this.getClass().getClassLoader());
+			Iterator<Command> iter = commandloader.iterator(); 
+			while (iter.hasNext()) {
+				Command c = iter.next();
+				commands.put(c.getName(), c);
+			}
+		}
+		connect();
+	}
 
+	@Override
+	public void stop() {
+		if (redis != null) {
+			redis.quit();
+		}
+	}
+	
+	private void connect () {
 		address = getOptionalStringConfig("address", "vertx.redis-client");
 		host = getOptionalStringConfig("host", "localhost");
 		port = getOptionalIntConfig("port", 6379);
@@ -72,10 +94,6 @@ public class RedisClient extends BusModBase implements
 		} catch (JedisException e) {
 			logger.error("Failed to connect to redis server", e);
 		}
-	}
-
-	public void stop() {
-		redis.quit();
 	}
 
 	public void handle(Message<JsonObject> message) {
@@ -104,55 +122,8 @@ public class RedisClient extends BusModBase implements
 	public Jedis getClient() {
 		return redis;
 	}
-
-	/**
-	 * Helper to load all commands from a package
-	 * @param pckgname
-	 */
-	private static void find(String pckgname) {
-		// Code from JWhich
-		// ======
-		// Translate the package name into an absolute path
-		String name = new String(pckgname);
-		if (!name.startsWith("/")) {
-			name = "/" + name;
-		}
-		name = name.replace('.', '/');
-
-		// Get a File object for the package
-		URL url = RedisClient.class.getResource(name);
-		File directory = new File(url.getFile());
-		// New code
-		// ======
-		if (directory.exists()) {
-			// Get the list of the files contained in the package
-			String[] files = directory.list();
-			for (int i = 0; i < files.length; i++) {
-
-				// we are only interested in .class files
-				if (files[i].endsWith(".class")) {
-					// removes the .class extension
-					String classname = files[i].substring(0,
-							files[i].length() - 6);
-					try {
-						Class<?> clazz = Class.forName(pckgname + "." + classname);
-						// loaded class is a command
-						if (Command.class.isAssignableFrom(clazz)) {
-							Object o = clazz.newInstance();
-							commands.put(((Command) o).getName(), (Command) o);
-						}
-					} catch (ClassNotFoundException cnfex) {
-						System.err.println(cnfex);
-					} catch (InstantiationException iex) {
-						// We try to instantiate an interface
-						// or an object that does not have a
-						// default constructor
-					} catch (IllegalAccessException iaex) {
-						// The class is not public
-					}
-				}
-			}
-		}
+	
+	public void setClient (Jedis client) {
+		this.redis = client;
 	}
-
 }
