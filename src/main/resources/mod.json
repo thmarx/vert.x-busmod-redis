@@ -1,4 +1,4 @@
 {
-  "main": "org.vertx.mods.RedisClient",
+  "main": "org.vertx.mods.redis.RedisClient",
   "worker": true
 }

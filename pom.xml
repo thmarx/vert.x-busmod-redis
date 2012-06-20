@@ -8,8 +8,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.vertx.mod</groupId>
-    <artifactId>redis</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <artifactId>redis-client</artifactId>
+    <version>1.1.0</version>
 
     <name>Vert.x Redis BusMod</name>
 
