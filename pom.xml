@@ -9,7 +9,7 @@
 
     <groupId>org.vertx.mod</groupId>
     <artifactId>redis-client</artifactId>
-    <version>1.1.0</version>
+    <version>0.1.0</version>
 
     <name>Vert.x Redis BusMod</name>
 
@@ -205,4 +205,11 @@
             </build>
         </profile>
     </profiles>
+	<repositories>
+	<repository>
+			<id>marx-labs</id>
+			<name>marx-labs components</name>
+			<url>http://marx-labs.googlecode.com/svn/repo/</url>
+		</repository>
+	</repositories>
 </project>
