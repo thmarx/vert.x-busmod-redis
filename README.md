@@ -117,7 +117,7 @@ Example request:
 ```javascript
 {
 	command : "exists",
-	value : "key1"
+	key : "key1"
 }
 ```
 Example response:
