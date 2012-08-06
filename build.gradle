@@ -56,6 +56,7 @@ task copyMod( type:Copy, dependsOn: 'classes' ) {
   into "build/mod/$modulename-v$version"
   from 'build/classes/main'
   from 'src/main/conf'
+  from 'src/main/resources'
   into( 'lib' ) {
     from configurations.compile
   }
