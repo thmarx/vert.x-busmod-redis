@@ -24,6 +24,7 @@ import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
 import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
 import redis.clients.jedis.exceptions.JedisException;
@@ -60,43 +61,44 @@ public class ZRangeByScoreCommand extends Command {
 		
 		Number offset = message.body.getNumber("offset");
 		if (offset != null) {
-			checkType(offset, "offset must be of type integer", new Class[] {Integer.class});
+			checkType(offset, "offset must be of type long", new Class[] {Long.class});
 		}
 		Number count = message.body.getNumber("count");
 		if (count != null) {
-			checkType(count, "count must be of type integer", new Class[] {Integer.class});
+			checkType(count, "count must be of type long", new Class[] {Long.class});
 		}
 		
 		try {
 			
-			// TODO
-			Future<List<ScoredValue<String>>> response_values = null; 
+			Future<List<String>> responseFuture = null; 
 			
 			if (min instanceof String && max instanceof String) {
 				if (count != null && offset != null) {
-//					response_values = context.getConnection().zrangebyscore(key, (String)min, (String)max, offset.intValue(), count.intValue());
+					responseFuture = context.getConnection().zrangebyscore(key, (String)min, (String)max, offset.intValue(), count.intValue());
 				} else {
-					response_values = context.getConnection().zrangebyscoreWithScores(key, (String)min, (String)max);
+					responseFuture = context.getConnection().zrangebyscore(key, (String)min, (String)max);
 				}
 			} else if (min instanceof Double && max instanceof Double) {
 				if (count != null && offset != null) {
-//					response_values = context.getClient().zrangebyscore(key, (Double)min, (Double)max, offset.intValue(), count.intValue());
+					responseFuture = context.getConnection().zrangebyscore(key, (Double)min, (Double)max, offset.intValue(), count.intValue());
 				} else {
-//					response_values = context.getClient().zrangebyscore(key, (Double)min, (Double)max);
+					responseFuture = context.getConnection().zrangebyscore(key, (Double)min, (Double)max);
 				}
 			} else {
 				throw new CommandException("min and max must be of the same type");
 			}
 
-//			JsonArray response;
-//			if (response_values != null && !response_values.isEmpty()) {
-//				response = new JsonArray(response_values.toArray());
-//			} else {
-//				 response = new JsonArray();
-//			}
-//			response(message, response);
+			List<String> response_values = responseFuture.get();
 			
-		} catch (JedisException e) {
+			JsonArray response;
+			if (response_values != null && !response_values.isEmpty()) {
+				response = new JsonArray(response_values.toArray());
+			} else {
+				 response = new JsonArray();
+			}
+			response(message, response);
+			
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

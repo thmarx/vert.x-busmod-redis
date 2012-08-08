@@ -23,7 +23,7 @@ net.ml.vertx.mods.redis.commands.keys.PersistCommand
 net.ml.vertx.mods.redis.commands.keys.RandomKeyCommand
 net.ml.vertx.mods.redis.commands.keys.RenameCommand
 net.ml.vertx.mods.redis.commands.keys.RenameNXCommand
-# net.ml.vertx.mods.redis.commands.keys.SortCommand
+net.ml.vertx.mods.redis.commands.keys.SortCommand
 net.ml.vertx.mods.redis.commands.keys.TTLCommand
 net.ml.vertx.mods.redis.commands.keys.TypeCommand
 
@@ -66,8 +66,8 @@ net.ml.vertx.mods.redis.commands.sets.SUnionStoreCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZCardCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZCountCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZIncrByCommand
-# net.ml.vertx.mods.redis.commands.sortedsets.ZInterStoreCommand
-# net.ml.vertx.mods.redis.commands.sortedsets.ZRangeByScoreCommand
+net.ml.vertx.mods.redis.commands.sortedsets.ZInterStoreCommand
+net.ml.vertx.mods.redis.commands.sortedsets.ZRangeByScoreCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZRangeCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZRankCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZRemCommand

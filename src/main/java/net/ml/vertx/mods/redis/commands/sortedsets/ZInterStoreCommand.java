@@ -16,6 +16,8 @@
 package net.ml.vertx.mods.redis.commands.sortedsets;
 
 
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
@@ -23,6 +25,8 @@ import net.ml.vertx.mods.redis.commands.CommandException;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
+
+import com.lambdaworks.redis.ZStoreArgs;
 
 import redis.clients.jedis.ZParams;
 import redis.clients.jedis.ZParams.Aggregate;
@@ -59,26 +63,31 @@ public class ZInterStoreCommand extends Command {
 		
 		try {
 			
-			ZParams params = new ZParams();
+			ZStoreArgs args = new ZStoreArgs();
 			switch (aggregate.toLowerCase()) {
 				case "sum":
-					params.aggregate(Aggregate.SUM);
+					args.sum();
 					break;
 				case "min":
-					params.aggregate(Aggregate.MIN);
+					args.min();
 					break;
 				case "max":
-					params.aggregate(Aggregate.MAX);
+					args.max();
 					break;
 				default: 
-					params.aggregate(Aggregate.SUM);
+					args = null;
 			}
 			
-			// TODO
-//			Long response = context.getConnection().zinterstore(destination, params, getStringArray(keys));
+			
+			Future<Long> response = null;
+			if (args == null) {
+				response = context.getConnection().zinterstore(destination, getStringArray(keys));
+			} else {
+				response = context.getConnection().zinterstore(destination, args, getStringArray(keys));
+			}
 
-//			response(message, response);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

@@ -16,6 +16,8 @@
 package net.ml.vertx.mods.redis.commands.keys;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
@@ -24,6 +26,8 @@ import net.ml.vertx.mods.redis.commands.CommandException;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
+
+import com.lambdaworks.redis.SortArgs;
 
 import redis.clients.jedis.SortingParams;
 import redis.clients.jedis.exceptions.JedisException;
@@ -55,7 +59,7 @@ public class SortCommand extends Command {
 		try {
 			// TODO: please refactor
 
-			List<String> values = null;
+			Future<List<String>> resultFuture = null;
 			
 			if (resultkey != null) {
 				
@@ -63,13 +67,14 @@ public class SortCommand extends Command {
 				return;
 			}
 			
-			SortingParams sorting = getSortingParams(message);
+			SortArgs sorting = getSortingParams(message);
 			
 			if (sorting != null) {
-				values = context.getClient().sort(key, sorting);
+				resultFuture = context.getConnection().sort(key, sorting);
 			} else {
-				values = context.getClient().sort(key);
+				resultFuture = context.getConnection().sort(key);
 			}
+			List<String> values = resultFuture.get();
 			
 			JsonArray result = null;
 			if (values != null && !values.isEmpty()) {
@@ -80,13 +85,13 @@ public class SortCommand extends Command {
 
 			response(message, result);
 			
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 	}
 	
-	private SortingParams getSortingParams (Message<JsonObject> message) {
-		SortingParams params = new SortingParams();
+	private SortArgs getSortingParams (Message<JsonObject> message) {
+		SortArgs params = new SortArgs();
 		boolean hasParams = false;
 		
 		boolean alpha = message.body.getBoolean("alpha", false);
@@ -114,30 +119,20 @@ public class SortCommand extends Command {
 			params.limit(start.intValue(), count.intValue());
 			hasParams = true;
 		}
-		boolean nosort = message.body.getBoolean("nosort", false);
-		if (nosort) {
-			params.nosort();
-			hasParams = true;
-		}
-		
-		
 		if (!hasParams) {
 			return null;
 		}
 		return params;
 	}
 	
-	private void handleStore (Message<JsonObject> message, CommandContext context, String key, String resultkey) {
-		Long storeResult = null;
-		SortingParams sorting = getSortingParams(message);
-		if (sorting != null) {
-			storeResult = context.getClient().sort(key, sorting, resultkey);
-		} else {
-			storeResult = context.getClient().sort(key, resultkey);
-		}
+	private void handleStore (Message<JsonObject> message, CommandContext context, String key, String resultkey) throws Exception {
+		Future<Long> storeResult = null;
+		SortArgs sorting = getSortingParams(message);
+		
+		storeResult = context.getConnection().sortStore(key, sorting, resultkey);
 		
 		
-		response(message, storeResult);
+		response(message, storeResult.get());
 	}
 	
 	
