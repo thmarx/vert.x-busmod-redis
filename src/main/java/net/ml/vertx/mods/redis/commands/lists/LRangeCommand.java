@@ -17,15 +17,15 @@ package net.ml.vertx.mods.redis.commands.lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * LRangeCommand
@@ -56,13 +56,13 @@ public class LRangeCommand extends Command {
 		checkType(end, "end must be an integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		try {
-			List<String> value = context.getClient().lrange(key, start.longValue(), end.longValue());
+			Future<List<String>> value = context.getConnection().lrange(key, start.longValue(), end.longValue());
 			
 			
-			JsonArray response = new JsonArray(new ArrayList<Object>(value));
+			JsonArray response = new JsonArray(new ArrayList<Object>(value.get()));
 			
 			response(message, response);
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

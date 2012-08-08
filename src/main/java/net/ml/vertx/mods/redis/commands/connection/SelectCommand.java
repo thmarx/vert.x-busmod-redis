@@ -15,13 +15,12 @@
  */
 package net.ml.vertx.mods.redis.commands.connection;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * SelectCommand
@@ -46,10 +45,10 @@ public class SelectCommand extends Command {
 
 		try {
 
-			String response = context.getClient().select(index.intValue());
+			String response = context.getConnection().select(index.intValue());
 			response(message, response);
 			
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

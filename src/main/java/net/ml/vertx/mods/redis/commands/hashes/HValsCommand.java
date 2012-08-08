@@ -16,15 +16,15 @@
 package net.ml.vertx.mods.redis.commands.hashes;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * HValsCommand
@@ -48,7 +48,9 @@ public class HValsCommand extends Command {
 
 		try {
 
-			List<String> values = context.getClient().hvals(key);
+			Future<List<String>> response = context.getConnection().hvals(key);
+			
+			List<String> values = response.get();
 			
 			JsonArray values_json;
 			if (values != null && !values.isEmpty()) {
@@ -58,7 +60,7 @@ public class HValsCommand extends Command {
 			}
 			response(message, values_json);
 
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

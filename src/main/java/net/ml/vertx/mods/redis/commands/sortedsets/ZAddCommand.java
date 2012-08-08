@@ -17,14 +17,14 @@ package net.ml.vertx.mods.redis.commands.sortedsets;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * ZAddCommand
@@ -64,10 +64,11 @@ public class ZAddCommand extends Command {
 			}
 			
 			
-			Long response = context.getClient().zadd(key, fieldvalues);
+			// TODO: check if this is correct
+			Future<Long> response = context.getConnection().zadd(key, fieldvalues);
 			
-			response(message, response);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

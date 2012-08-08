@@ -17,12 +17,13 @@ package net.ml.vertx.mods.redis.commands.keys;
 
 import java.util.List;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
+
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 
 import redis.clients.jedis.SortingParams;
 import redis.clients.jedis.exceptions.JedisException;
@@ -52,6 +53,7 @@ public class SortCommand extends Command {
 
 
 		try {
+			// TODO: please refactor
 
 			List<String> values = null;
 			
@@ -133,6 +135,7 @@ public class SortCommand extends Command {
 		} else {
 			storeResult = context.getClient().sort(key, resultkey);
 		}
+		
 		
 		response(message, storeResult);
 	}

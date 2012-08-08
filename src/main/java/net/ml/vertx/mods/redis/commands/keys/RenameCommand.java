@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.keys;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * RenameCommand
@@ -47,9 +48,9 @@ public class RenameCommand extends Command {
 
 		try {
 
-			String response = context.getClient().rename(key, newkey);
-			response(message, response);
-		} catch (JedisException e) {
+			Future<String> response = context.getConnection().rename(key, newkey);
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.lists;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * LIndexCommand
@@ -47,10 +48,10 @@ public class LIndexCommand extends Command {
 		checkType(index, "integer must be of type integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		try {
-			String value = context.getClient().lindex(key, index.longValue());
+			Future<String> value = context.getConnection().lindex(key, index.longValue());
 			
-			response(message, value);
-		} catch (JedisException e) {
+			response(message, value.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

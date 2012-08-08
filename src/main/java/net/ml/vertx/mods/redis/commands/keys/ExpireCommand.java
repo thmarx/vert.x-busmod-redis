@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.keys;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * ExpireCommand
@@ -49,10 +50,10 @@ public class ExpireCommand extends Command {
 
 		try {
 
-			Long value = context.getClient().expire(key, seconds.intValue());
-			response(message, value);
+			Future<Boolean> value = context.getConnection().expire(key, seconds.intValue());
+			response(message, value.get());
 			
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

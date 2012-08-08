@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.strings;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * AppendCommand
@@ -46,10 +47,9 @@ public class AppendCommand extends Command {
 		checkNull(key, "value can not be null");
 
 		try {
-
-			Long length = context.getClient().append(key, value);
-			response(message, length);
-		} catch (JedisException e) {
+			Future<Long> response = context.getConnection().append(key, value);
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

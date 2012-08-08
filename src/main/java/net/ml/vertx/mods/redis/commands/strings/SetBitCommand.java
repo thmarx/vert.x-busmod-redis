@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.strings;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * SetBitCommand
@@ -47,14 +48,15 @@ public class SetBitCommand extends Command {
 		checkType(offset, "offset must be an integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		
-		Boolean value = message.body.getBoolean("value");
-		checkNull(value, "value can not be null");
+		Number value = message.body.getNumber("value");
+		checkNull(value, "offset can not be null");
+		checkType(value, "value must be an integer", new Class<?> []{Integer.class});
 		
 		try {
-			value = context.getClient().setbit(key, offset.longValue(), value);
+			Future<Long> response = context.getConnection().setbit(key, offset.longValue(), value.intValue());
 			
-			response(message, value);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

@@ -16,13 +16,14 @@
 package net.ml.vertx.mods.redis.commands.sets;
 
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * SCardCommand
@@ -46,11 +47,11 @@ public class SCardCommand extends Command {
 		
 		try {
 			
-			Long response = context.getClient().scard(key);
+			Future<Long> response = context.getConnection().scard(key);
 			
 
-			response(message, response);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

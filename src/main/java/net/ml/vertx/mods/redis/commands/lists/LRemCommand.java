@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.lists;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * LRemCommand
@@ -50,10 +51,10 @@ public class LRemCommand extends Command {
 		checkType(count, "count must be an integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		try {
-			Long response = context.getClient().lrem(key, count.longValue(), value);
+			Future<Long> response = context.getConnection().lrem(key, count.longValue(), value);
 			
-			response(message, response);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

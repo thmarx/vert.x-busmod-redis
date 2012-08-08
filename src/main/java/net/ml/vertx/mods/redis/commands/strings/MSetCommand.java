@@ -15,16 +15,16 @@
  */
 package net.ml.vertx.mods.redis.commands.strings;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * MSetCommand
@@ -48,7 +48,7 @@ public class MSetCommand extends Command {
 		
 		try {
 			
-			List<String> keyvalue = new ArrayList<String>();
+			Map<String, String> keyvalue = new HashMap<String, String>();
 			
 		
 			for (String fn : keyvalues.getFieldNames()) {
@@ -56,14 +56,13 @@ public class MSetCommand extends Command {
 				if (!(fv instanceof String)) {
 					throw new CommandException("only stringvalues are allowed for field values");
 				}
-				keyvalue.add(fn);
-				keyvalue.add((String) fv);
+				keyvalue.put(fn, (String) fv);
 			}
 			
-			String response = context.getClient().mset(keyvalue.toArray(new String[keyvalue.size()]));
+			Future<String> response = context.getConnection().mset(keyvalue);
 			
-			response(message, response);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

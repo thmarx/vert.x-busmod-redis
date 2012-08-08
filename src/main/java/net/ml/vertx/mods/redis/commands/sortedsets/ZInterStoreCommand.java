@@ -16,12 +16,13 @@
 package net.ml.vertx.mods.redis.commands.sortedsets;
 
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
+
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 
 import redis.clients.jedis.ZParams;
 import redis.clients.jedis.ZParams.Aggregate;
@@ -73,9 +74,10 @@ public class ZInterStoreCommand extends Command {
 					params.aggregate(Aggregate.SUM);
 			}
 			
-			Long response = context.getClient().zinterstore(destination, params, getStringArray(keys));
+			// TODO
+//			Long response = context.getConnection().zinterstore(destination, params, getStringArray(keys));
 
-			response(message, response);
+//			response(message, response);
 		} catch (JedisException e) {
 			sendError(message, e.getLocalizedMessage());
 		}

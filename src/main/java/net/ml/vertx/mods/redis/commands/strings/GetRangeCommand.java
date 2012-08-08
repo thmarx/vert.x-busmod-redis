@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.strings;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * GetRangeCommand
@@ -52,10 +53,10 @@ public class GetRangeCommand extends Command {
 		checkType(end, "end must be an integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		try {
-			String value = context.getClient().getrange(key, start.longValue(), end.longValue());
+			Future<String> value = context.getConnection().getrange(key, start.longValue(), end.longValue());
 			
-			response(message, value);
-		} catch (JedisException e) {
+			response(message, value.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

@@ -15,16 +15,16 @@
  */
 package net.ml.vertx.mods.redis.commands.keys;
 
-import java.util.Set;
+import java.util.List;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * KeysCommand
@@ -48,7 +48,9 @@ public class KeysCommand extends Command {
 
 		try {
 
-			Set<String> keys = context.getClient().keys(pattern);
+			Future<List<String>> response = context.getConnection().keys(pattern);
+			
+			List<String> keys = response.get();
 			
 			JsonArray keys_json;
 			if (keys != null && !keys.isEmpty()) {
@@ -58,7 +60,7 @@ public class KeysCommand extends Command {
 			}
 			response(message, keys_json);
 
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

@@ -16,11 +16,12 @@
 
 package net.ml.vertx.mods.redis.commands;
 
+import net.ml.vertx.mods.redis.CommandContext;
+
 import org.vertx.java.busmods.BusModBase;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
-import net.ml.vertx.mods.redis.CommandContext;
 
 /**
  * Redis command interface

@@ -15,16 +15,17 @@
  */
 package net.ml.vertx.mods.redis.commands.lists;
 
-import java.util.List;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
+
+import com.lambdaworks.redis.KeyValue;
 
 /**
  * BRPopCommand
@@ -48,17 +49,16 @@ public class BRPopCommand extends Command {
 		Number timeout = message.body.getNumber("timeout", 0);
 		
 		try {
-			List<String> values = context.getClient().brpop(timeout.intValue(), getStringArray(keys));
+			Future<KeyValue<String, String>> values = context.getConnection().brpop(timeout.intValue(), getStringArray(keys));
+			KeyValue<String, String> value = values.get();
 			
-			JsonArray result;
-			if (values != null && !values.isEmpty()) {
-				result = new JsonArray(values.toArray());
-			} else {
-				result = new JsonArray();
-			}
+			
+			JsonObject result = new JsonObject();
+			result.putString("key", value.key);
+			result.putString("value", value.value);
 			
 			response(message, result);
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

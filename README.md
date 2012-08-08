@@ -342,6 +342,8 @@ Example response:
 
 ###### Sort
 
+CURRENTLY NOT SUPPORTED
+
 Sort the elements in a list, set or sorted set
 
 Return : Multi-bulk reply: list of sorted elements.
@@ -699,7 +701,7 @@ Example request:
 	command : "setbit",
 	key : "the_key",
 	offset : 5,
-	value: true
+	value: 1
 }
 ```	
 

@@ -17,15 +17,15 @@ package net.ml.vertx.mods.redis.commands.sets;
 
 
 import java.util.Set;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * SDiffCommand
@@ -48,8 +48,9 @@ public class SDiffCommand extends Command {
 		
 		
 		try {
-			Set<String> response_values = context.getClient().sdiff(getStringArray(keys));
+			Future<Set<String>> response = context.getConnection().sdiff(getStringArray(keys));
 			
+			Set<String> response_values = response.get();
 
 			JsonArray keys_json;
 			if (response_values != null && !response_values.isEmpty()) {
@@ -58,7 +59,7 @@ public class SDiffCommand extends Command {
 				 keys_json = new JsonArray();
 			}
 			response(message, keys_json);
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

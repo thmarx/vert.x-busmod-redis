@@ -17,14 +17,14 @@ package net.ml.vertx.mods.redis.commands.hashes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * HMSetCommand
@@ -63,10 +63,10 @@ public class HMSetCommand extends Command {
 			}
 			
 			
-			String response = context.getClient().hmset(key, fieldvalues);
+			Future<String> response = context.getConnection().hmset(key, fieldvalues);
 			
-			response(message, response);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.lists;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * RPopLPushCommand
@@ -48,10 +49,10 @@ public class RPopLPushCommand extends Command {
 		
 		
 		try {
-			String value = context.getClient().rpoplpush(source, destination);
+			Future<String> value = context.getConnection().rpoplpush(source, destination);
 			
-			response(message, value);
-		} catch (JedisException e) {
+			response(message, value.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

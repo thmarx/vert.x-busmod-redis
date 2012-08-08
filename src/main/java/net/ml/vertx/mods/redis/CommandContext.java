@@ -15,6 +15,8 @@
  */
 package net.ml.vertx.mods.redis;
 
+import com.lambdaworks.redis.RedisAsyncConnection;
+
 import redis.clients.jedis.Jedis;
 
 /**
@@ -25,4 +27,6 @@ import redis.clients.jedis.Jedis;
  */
 public interface CommandContext {
 	  public Jedis getClient ();
+	  
+	  public RedisAsyncConnection<String, String> getConnection ();
 }

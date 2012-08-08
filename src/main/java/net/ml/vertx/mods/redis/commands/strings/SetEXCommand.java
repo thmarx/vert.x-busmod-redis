@@ -15,13 +15,14 @@
  */
 package net.ml.vertx.mods.redis.commands.strings;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * SetEXCommand
@@ -51,9 +52,9 @@ public class SetEXCommand extends Command {
 		
 		try {
 
-			String response = context.getClient().setex(key, seconds.intValue(), value);
-			response(message, response);
-		} catch (JedisException e) {
+			Future<String> response = context.getConnection().setex(key, seconds.intValue(), value);
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

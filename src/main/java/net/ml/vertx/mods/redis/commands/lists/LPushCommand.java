@@ -15,14 +15,15 @@
  */
 package net.ml.vertx.mods.redis.commands.lists;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * LPushCommand
@@ -47,10 +48,10 @@ public class LPushCommand extends Command {
 		checkNull(values, "values can not be null");
 		
 		try {
-			Long value = context.getClient().lpush(key, getStringArray(values));
+			Future<Long> value = context.getConnection().lpush(key, getStringArray(values));
 			
-			response(message, value);
-		} catch (JedisException e) {
+			response(message, value.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

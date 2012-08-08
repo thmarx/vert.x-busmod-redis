@@ -18,12 +18,13 @@ package net.ml.vertx.mods.redis.commands.sortedsets;
 
 import java.util.Set;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
+
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonArray;
+import org.vertx.java.core.json.JsonObject;
 
 import redis.clients.jedis.exceptions.JedisException;
 
@@ -65,7 +66,7 @@ public class ZRevRangeByScoreCommand extends Command {
 		}
 		
 		try {
-			
+			// TODO
 			Set<String> response_values = null; 
 			
 			if (min instanceof String && max instanceof String) {

@@ -16,16 +16,19 @@
 package net.ml.vertx.mods.redis.commands.sortedsets;
 
 
-import java.util.Set;
+import java.util.List;
+import java.util.concurrent.Future;
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
+
 import redis.clients.jedis.exceptions.JedisException;
+
+import com.lambdaworks.redis.ScoredValue;
 
 /**
  * ZRangeByScoreCommand
@@ -66,31 +69,32 @@ public class ZRangeByScoreCommand extends Command {
 		
 		try {
 			
-			Set<String> response_values = null; 
+			// TODO
+			Future<List<ScoredValue<String>>> response_values = null; 
 			
 			if (min instanceof String && max instanceof String) {
 				if (count != null && offset != null) {
-					response_values = context.getClient().zrangeByScore(key, (String)min, (String)max, offset.intValue(), count.intValue());
+//					response_values = context.getConnection().zrangebyscore(key, (String)min, (String)max, offset.intValue(), count.intValue());
 				} else {
-					response_values = context.getClient().zrangeByScore(key, (String)min, (String)max);
+					response_values = context.getConnection().zrangebyscoreWithScores(key, (String)min, (String)max);
 				}
 			} else if (min instanceof Double && max instanceof Double) {
 				if (count != null && offset != null) {
-					response_values = context.getClient().zrangeByScore(key, (Double)min, (Double)max, offset.intValue(), count.intValue());
+//					response_values = context.getClient().zrangebyscore(key, (Double)min, (Double)max, offset.intValue(), count.intValue());
 				} else {
-					response_values = context.getClient().zrangeByScore(key, (Double)min, (Double)max);
+//					response_values = context.getClient().zrangebyscore(key, (Double)min, (Double)max);
 				}
 			} else {
 				throw new CommandException("min and max must be of the same type");
 			}
 
-			JsonArray response;
-			if (response_values != null && !response_values.isEmpty()) {
-				response = new JsonArray(response_values.toArray());
-			} else {
-				 response = new JsonArray();
-			}
-			response(message, response);
+//			JsonArray response;
+//			if (response_values != null && !response_values.isEmpty()) {
+//				response = new JsonArray(response_values.toArray());
+//			} else {
+//				 response = new JsonArray();
+//			}
+//			response(message, response);
 			
 		} catch (JedisException e) {
 			sendError(message, e.getLocalizedMessage());

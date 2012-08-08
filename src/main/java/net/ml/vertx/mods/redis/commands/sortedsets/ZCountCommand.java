@@ -16,13 +16,14 @@
 package net.ml.vertx.mods.redis.commands.sortedsets;
 
 
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
-import redis.clients.jedis.exceptions.JedisException;
+import org.vertx.java.core.eventbus.Message;
+import org.vertx.java.core.json.JsonObject;
 
 /**
  * ZCountCommand
@@ -53,19 +54,19 @@ public class ZCountCommand extends Command {
 		
 		try {
 			
-			Long response = null;
+			Future<Long> response = null;
 			
 			if (min instanceof String && max instanceof String){
-				response = context.getClient().zcount(key, (String)min, (String)max);
+				response = context.getConnection().zcount(key, (String)min, (String)max);
 			} else if (min instanceof Double && max instanceof Double) {
-				response = context.getClient().zcount(key, (Double)min, (Double)max);
+				response = context.getConnection().zcount(key, (Double)min, (Double)max);
 			} else {
 				throw new CommandException("min and max must be of the same type");
 			}
 			
 
-			response(message, response);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 
