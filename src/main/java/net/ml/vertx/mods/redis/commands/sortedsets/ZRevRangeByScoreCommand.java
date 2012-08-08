@@ -16,7 +16,8 @@
 package net.ml.vertx.mods.redis.commands.sortedsets;
 
 
-import java.util.Set;
+import java.util.List;
+import java.util.concurrent.Future;
 
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
@@ -25,8 +26,6 @@ import net.ml.vertx.mods.redis.commands.CommandException;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
-
-import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * ZRangeByScoreCommand
@@ -66,24 +65,26 @@ public class ZRevRangeByScoreCommand extends Command {
 		}
 		
 		try {
-			// TODO
-			Set<String> response_values = null; 
+			Future<List<String>> responseFuture = null; 
 			
 			if (min instanceof String && max instanceof String) {
 				if (count != null && offset != null) {
-					response_values = context.getClient().zrangeByScore(key, (String)min, (String)max, offset.intValue(), count.intValue());
+					responseFuture = context.getConnection().zrangebyscore(key, (String)min, (String)max, offset.intValue(), count.intValue());
 				} else {
-					response_values = context.getClient().zrangeByScore(key, (String)min, (String)max);
+					responseFuture = context.getConnection().zrangebyscore(key, (String)min, (String)max);
 				}
 			} else if (min instanceof Double && max instanceof Double) {
 				if (count != null && offset != null) {
-					response_values = context.getClient().zrangeByScore(key, (Double)min, (Double)max, offset.intValue(), count.intValue());
+					responseFuture = context.getConnection().zrangebyscore(key, (Double)min, (Double)max, offset.intValue(), count.intValue());
 				} else {
-					response_values = context.getClient().zrangeByScore(key, (Double)min, (Double)max);
+					responseFuture = context.getConnection().zrangebyscore(key, (Double)min, (Double)max);
 				}
 			} else {
 				throw new CommandException("min and max must be of the same type");
 			}
+			
+			
+			List<String> response_values = responseFuture.get();
 
 			JsonArray response;
 			if (response_values != null && !response_values.isEmpty()) {
@@ -93,7 +94,7 @@ public class ZRevRangeByScoreCommand extends Command {
 			}
 			response(message, response);
 			
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

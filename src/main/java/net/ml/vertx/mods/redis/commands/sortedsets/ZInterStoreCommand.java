@@ -28,10 +28,6 @@ import org.vertx.java.core.json.JsonObject;
 
 import com.lambdaworks.redis.ZStoreArgs;
 
-import redis.clients.jedis.ZParams;
-import redis.clients.jedis.ZParams.Aggregate;
-import redis.clients.jedis.exceptions.JedisException;
-
 /**
  * ZInterStoreCommand
  * <p>

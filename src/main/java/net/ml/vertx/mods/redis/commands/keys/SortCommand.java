@@ -16,7 +16,6 @@
 package net.ml.vertx.mods.redis.commands.keys;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import net.ml.vertx.mods.redis.CommandContext;
@@ -28,9 +27,6 @@ import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
 import com.lambdaworks.redis.SortArgs;
-
-import redis.clients.jedis.SortingParams;
-import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * SortCommand

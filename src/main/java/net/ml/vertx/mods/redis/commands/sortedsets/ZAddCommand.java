@@ -15,8 +15,8 @@
  */
 package net.ml.vertx.mods.redis.commands.sortedsets;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import net.ml.vertx.mods.redis.CommandContext;
@@ -52,7 +52,7 @@ public class ZAddCommand extends Command {
 		
 		try {
 			
-			Map<Double, String> fieldvalues = new HashMap<Double, String>();
+			List<Object> fieldvalues = new ArrayList<Object>();
 			
 			for (String fn : members.getFieldNames()) {
 				Object fv = members.getField(fn);
@@ -60,12 +60,12 @@ public class ZAddCommand extends Command {
 				if (!(fv instanceof Double)) {
 					throw new CommandException("only doubles are allowed for score value");
 				}
-				fieldvalues.put((Double)fv, fn);
+				fieldvalues.add((Double)fv);
+				fieldvalues.add(fn);
 			}
 			
 			
-			// TODO: check if this is correct
-			Future<Long> response = context.getConnection().zadd(key, fieldvalues);
+			Future<Long> response = context.getConnection().zadd(key, fieldvalues.toArray());
 			
 			response(message, response.get());
 		} catch (Exception e) {

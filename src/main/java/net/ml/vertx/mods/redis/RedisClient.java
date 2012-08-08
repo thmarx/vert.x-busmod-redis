@@ -21,18 +21,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import net.ml.vertx.mods.redis.commands.Command;
+import net.ml.vertx.mods.redis.commands.CommandException;
+
 import org.vertx.java.busmods.BusModBase;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonObject;
 
 import com.lambdaworks.redis.RedisAsyncConnection;
-
-import net.ml.vertx.mods.redis.commands.Command;
-import net.ml.vertx.mods.redis.commands.CommandException;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * RedisClient Bus Module
@@ -61,7 +58,7 @@ public class RedisClient extends BusModBase implements
 	private String address;
 	private String host;
 	private int port;
-	private Jedis redis;
+
 
 	private com.lambdaworks.redis.RedisClient client;
 	private  RedisAsyncConnection<String, String> connection;
@@ -84,9 +81,6 @@ public class RedisClient extends BusModBase implements
 
 	@Override
 	public void stop() {
-		if (redis != null) {
-			redis.quit();
-		}
 		if (connection != null) {
 			connection.close();
 		}
@@ -99,13 +93,10 @@ public class RedisClient extends BusModBase implements
 		port = getOptionalIntConfig("port", 6379);
 
 		try {
-			redis = new Jedis(host, port);
-			redis.ping();
-			
 			client = new com.lambdaworks.redis.RedisClient(host, port);
 			connection = client.connectAsync();
 			eb.registerHandler(address, this);
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			logger.error("Failed to connect to redis server", e);
 		}
 	}
@@ -130,15 +121,6 @@ public class RedisClient extends BusModBase implements
 			sendError(message, "Invalid command: " + command);
 			return;
 		}
-	}
-
-	@Override
-	public Jedis getClient() {
-		return redis;
-	}
-	
-	public void setClient (Jedis client) {
-		this.redis = client;
 	}
 
 	@Override

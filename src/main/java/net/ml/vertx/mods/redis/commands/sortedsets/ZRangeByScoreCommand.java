@@ -27,10 +27,6 @@ import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
-import redis.clients.jedis.exceptions.JedisException;
-
-import com.lambdaworks.redis.ScoredValue;
-
 /**
  * ZRangeByScoreCommand
  * <p>

@@ -72,12 +72,12 @@ net.ml.vertx.mods.redis.commands.sortedsets.ZRangeCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZRankCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZRemCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZRemRangeByRankCommand
-# net.ml.vertx.mods.redis.commands.sortedsets.ZRemRangeByScoreCommand
-# net.ml.vertx.mods.redis.commands.sortedsets.ZRevRangeByScoreCommand
+net.ml.vertx.mods.redis.commands.sortedsets.ZRemRangeByScoreCommand
+net.ml.vertx.mods.redis.commands.sortedsets.ZRevRangeByScoreCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZRevRangeCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZRevRankCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZScoreCommand
-# net.ml.vertx.mods.redis.commands.sortedsets.ZUnionStoreCommand
+net.ml.vertx.mods.redis.commands.sortedsets.ZUnionStoreCommand
 
 net.ml.vertx.mods.redis.commands.strings.AppendCommand
 net.ml.vertx.mods.redis.commands.strings.DecrByCommand

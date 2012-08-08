@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-  compile      	"redis.clients:jedis:$jedisVersion"
+  //compile      	"redis.clients:jedis:$jedisVersion"
   compile		"com.lambdaworks:lettuce:$lettuceVersion"
   provided     	"org.vert-x:vertx-core:$vertxVersion"
   provided     	"org.vert-x:vertx-platform:$vertxVersion"

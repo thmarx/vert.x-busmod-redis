@@ -16,14 +16,14 @@
 package net.ml.vertx.mods.redis.commands.sortedsets;
 
 
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonObject;
-
-import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * ZRemRangeByScoreCommand
@@ -55,21 +55,20 @@ public class ZRemRangeByScoreCommand extends Command {
 		
 		
 		try {
-			// TODO
-			Long response = null; 
+			Future<Long> response = null; 
 			
 			if (min instanceof String && max instanceof String) {
-				response = context.getClient().zremrangeByScore(key, (String)min, (String)max);
+				response = context.getConnection().zremrangebyscore(key, (String)min, (String)max);
 			} else if (min instanceof Double && max instanceof Double) {
-				response = context.getClient().zremrangeByScore(key, (Double)min, (Double)max);
+				response = context.getConnection().zremrangebyscore(key, (Double)min, (Double)max);
 			} else {
 				throw new CommandException("min and max must be of the same type");
 			}
 
 			
-			response(message, response);
+			response(message, response.get());
 			
-		} catch (JedisException e) {
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 

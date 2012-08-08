@@ -16,6 +16,8 @@
 package net.ml.vertx.mods.redis.commands.sortedsets;
 
 
+import java.util.concurrent.Future;
+
 import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
@@ -24,9 +26,7 @@ import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
-import redis.clients.jedis.ZParams;
-import redis.clients.jedis.ZParams.Aggregate;
-import redis.clients.jedis.exceptions.JedisException;
+import com.lambdaworks.redis.ZStoreArgs;
 
 /**
  * ZUnionStoreCommand
@@ -60,25 +60,29 @@ public class ZUnionStoreCommand extends Command {
 		try {
 			
 			
-			ZParams params = new ZParams();
+			ZStoreArgs args = new ZStoreArgs();
 			switch (aggregate.toLowerCase()) {
 				case "sum":
-					params.aggregate(Aggregate.SUM);
+					args.sum();
 					break;
 				case "min":
-					params.aggregate(Aggregate.MIN);
+					args.min();
 					break;
 				case "max":
-					params.aggregate(Aggregate.MAX);
+					args.max();
 					break;
 				default: 
-					params.aggregate(Aggregate.SUM);
+					args = null;
 			}
-			// TODO
-//			Long response = context.getConnection().zunionstore(destination, params, getStringArray(keys));
+			Future<Long> response = null;
+			if (args != null) {
+				response = context.getConnection().zunionstore(destination, args, getStringArray(keys));
+			} else  {
+				response = context.getConnection().zunionstore(destination, getStringArray(keys));
+			}
 
-//			response(message, response);
-		} catch (JedisException e) {
+			response(message, response.get());
+		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 
