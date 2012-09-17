@@ -39,16 +39,15 @@ public class LIndexCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "keys can not be null");
 		
 		Number index = message.body.getNumber("index");
 		checkNull(index, "index can not be null");
-		checkType(index, "integer must be of type integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		try {
-			Future<String> value = context.getConnection().lindex(key, index.longValue());
+			final Future<String> value = context.getConnection().lindex(key, index.longValue());
 			
 			response(message, value.get());
 		} catch (Exception e) {

@@ -39,7 +39,7 @@ public class HIncrByCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
@@ -50,10 +50,9 @@ public class HIncrByCommand extends Command {
 		
 		Number increment = message.body.getNumber("increment");
 		checkNull(increment, "increment can not be null");
-		checkType(increment, "increment must be of type integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		try {
-			Future<Long> value = context.getConnection().hincrby(key, field, increment.longValue());
+			final Future<Long> value = context.getConnection().hincrby(key, field, increment.longValue());
 
 			response(message, value.get());
 		} catch (Exception e) {

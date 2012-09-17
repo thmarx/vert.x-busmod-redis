@@ -42,22 +42,22 @@ public class ZRevRangeCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
 		
 		Number start = message.body.getNumber("start");
 		checkNull(start, "start can not be null");
-		checkType(start, "start must be of type long", new Class[] {Long.class});
+		
 		
 		Number end = message.body.getNumber("end");
 		checkNull(end, "end can not be null");
-		checkType(end, "end must be of type long", new Class[] {Long.class});
+		
 		
 		try {
 			
-			Future<List<String>> responseFuture = context.getConnection().zrevrange(key, start.longValue(), end.longValue());
+			final Future<List<String>> responseFuture = context.getConnection().zrevrange(key, start.longValue(), end.longValue());
 			List<String> response_values = responseFuture.get(); 
 
 			JsonArray response;

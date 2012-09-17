@@ -39,7 +39,7 @@ public class HSetNXCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 
@@ -51,7 +51,7 @@ public class HSetNXCommand extends Command {
 		
 		try {
 
-			Future<Boolean> response = context.getConnection().hsetnx(key, field, value);
+			final Future<Boolean> response = context.getConnection().hsetnx(key, field, value);
 			response(message, response.get());
 		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());

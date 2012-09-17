@@ -41,7 +41,7 @@ public class SInterStoreCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		JsonArray keys = message.body.getArray("keys");
 		checkNull(keys, "keys can not be null");
 
@@ -49,7 +49,7 @@ public class SInterStoreCommand extends Command {
 		checkNull(destination, "destination can not be null");
 		
 		try {
-			Future<Long> response = context.getConnection().sinterstore(destination, getStringArray(keys));
+			final Future<Long> response = context.getConnection().sinterstore(destination, getStringArray(keys));
 
 			response(message, response.get());
 		} catch (Exception e) {

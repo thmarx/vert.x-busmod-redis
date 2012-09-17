@@ -41,14 +41,14 @@ public class HGetAllCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
 		
 		try {
-			Future<Map<String, String>> value = context.getConnection().hgetall(key);
+			final Future<Map<String, String>> value = context.getConnection().hgetall(key);
 
 			Map<String, Object> result = new HashMap<String, Object>(value.get());
 			

@@ -38,10 +38,10 @@ public class RandomKeyCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) {
+	public void handle(final Message<JsonObject> message, CommandContext context) {
 		try {
 
-			Future<String> value = context.getConnection().randomkey();
+			final Future<String> value = context.getConnection().randomkey();
 			
 			response(message, value.get());
 			

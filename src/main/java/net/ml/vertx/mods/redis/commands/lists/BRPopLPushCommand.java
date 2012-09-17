@@ -39,7 +39,7 @@ public class BRPopLPushCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String source = getMandatoryString("source", message);
 		checkNull(source, "source can not be null");
 		
@@ -49,7 +49,7 @@ public class BRPopLPushCommand extends Command {
 		Number timeout = message.body.getNumber("timeout", 0);
 		
 		try {
-			Future<String> value = context.getConnection().brpoplpush(timeout.longValue(), source, destination);
+			final Future<String> value = context.getConnection().brpoplpush(timeout.longValue(), source, destination);
 			
 			response(message, value.get());
 		} catch (Exception e) {

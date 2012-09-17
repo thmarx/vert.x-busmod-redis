@@ -42,7 +42,7 @@ public class ZRangeByScoreCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
@@ -56,13 +56,9 @@ public class ZRangeByScoreCommand extends Command {
 		checkType(max, "max must be of type double or string", new Class[] {Double.class, String.class});
 		
 		Number offset = message.body.getNumber("offset");
-		if (offset != null) {
-			checkType(offset, "offset must be of type long", new Class[] {Long.class});
-		}
+		
 		Number count = message.body.getNumber("count");
-		if (count != null) {
-			checkType(count, "count must be of type long", new Class[] {Long.class});
-		}
+		
 		
 		try {
 			

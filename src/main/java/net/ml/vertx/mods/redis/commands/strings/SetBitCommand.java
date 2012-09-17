@@ -39,21 +39,19 @@ public class SetBitCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");		
 
 		Number offset = message.body.getNumber("offset");
 		checkNull(offset, "offset can not be null");
-		checkType(offset, "offset must be an integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		
 		Number value = message.body.getNumber("value");
 		checkNull(value, "offset can not be null");
-		checkType(value, "value must be an integer", new Class<?> []{Integer.class});
 		
 		try {
-			Future<Long> response = context.getConnection().setbit(key, offset.longValue(), value.intValue());
+			final Future<Long> response = context.getConnection().setbit(key, offset.longValue(), value.intValue());
 			
 			response(message, response.get());
 		} catch (Exception e) {

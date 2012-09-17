@@ -41,7 +41,7 @@ public class MSetCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		JsonObject keyvalues = message.body.getObject("keyvalues");
 		
 		checkNull(keyvalues, "keyvalues can not be null");
@@ -59,7 +59,7 @@ public class MSetCommand extends Command {
 				keyvalue.put(fn, (String) fv);
 			}
 			
-			Future<String> response = context.getConnection().mset(keyvalue);
+			final Future<String> response = context.getConnection().mset(keyvalue);
 			
 			response(message, response.get());
 		} catch (Exception e) {

@@ -39,12 +39,12 @@ public class GetCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
 		try {
-			Future<String> response = context.getConnection().get(key);
+			final Future<String> response = context.getConnection().get(key);
 			
 			response(message, response.get());
 		} catch (Exception e) {

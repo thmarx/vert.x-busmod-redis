@@ -39,7 +39,7 @@ public class SetRangeCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 
@@ -48,11 +48,10 @@ public class SetRangeCommand extends Command {
 
 		Number offset = message.body.getNumber("offset");
 		checkNull(value, "offset can not be null");
-		checkType(offset, "offset must be of type", new Class<?> []{Integer.class});
 		
 		try {
 
-			Future<Long> response = context.getConnection().setrange(key, offset.longValue(), value);
+			final Future<Long> response = context.getConnection().setrange(key, offset.longValue(), value);
 
 			response(message, response.get());
 		} catch (Exception e) {

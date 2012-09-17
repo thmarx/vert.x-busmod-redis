@@ -40,7 +40,7 @@ public class LPushCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
@@ -48,7 +48,7 @@ public class LPushCommand extends Command {
 		checkNull(values, "values can not be null");
 		
 		try {
-			Future<Long> value = context.getConnection().lpush(key, getStringArray(values));
+			final Future<Long> value = context.getConnection().lpush(key, getStringArray(values));
 			
 			response(message, value.get());
 		} catch (Exception e) {

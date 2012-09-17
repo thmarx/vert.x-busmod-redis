@@ -40,7 +40,7 @@ public class SIsMemberCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
@@ -52,7 +52,7 @@ public class SIsMemberCommand extends Command {
 			
 			
 			
-			Future<Boolean> response = context.getConnection().sismember(key, member);
+			final Future<Boolean> response = context.getConnection().sismember(key, member);
 			
 
 			response(message, response.get());

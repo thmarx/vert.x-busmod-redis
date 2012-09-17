@@ -39,18 +39,17 @@ public class ExpireCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException{
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException{
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 
 		Number seconds = message.body.getNumber("seconds");
 		checkNull(seconds, "seconds can not be null");
 		
-		checkType(seconds, "seconds must be an integer", new Class<?> []{Integer.class});
 
 		try {
 
-			Future<Boolean> value = context.getConnection().expire(key, seconds.intValue());
+			final Future<Boolean> value = context.getConnection().expire(key, seconds.intValue());
 			response(message, value.get());
 			
 		} catch (Exception e) {

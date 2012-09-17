@@ -40,7 +40,7 @@ public class DelCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		JsonArray keys = message.body.getArray("keys");
 		
 		if (keys == null) {
@@ -49,7 +49,7 @@ public class DelCommand extends Command {
 		
 		try {
 			
-			Future<Long> response = context.getConnection().del(getStringArray(keys));
+			final Future<Long> response = context.getConnection().del(getStringArray(keys));
 			
 
 			response(message, response.get());

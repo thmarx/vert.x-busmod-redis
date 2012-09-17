@@ -40,22 +40,20 @@ public class ZRemRangeByRankCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
 		
 		Number start = message.body.getNumber("start");
 		checkNull(start, "start can not be null");
-		checkType(start, "start must be of type long", new Class[] {Long.class});
 		
 		Number end = message.body.getNumber("end");
 		checkNull(end, "end can not be null");
-		checkType(end, "end must be of type long", new Class[] {Long.class});
 		
 		try {
 			
-			Future<Long> response = context.getConnection().zremrangebyrank(key, start.longValue(), end.longValue());
+			final Future<Long> response = context.getConnection().zremrangebyrank(key, start.longValue(), end.longValue());
 			
 
 			response(message, response.get());

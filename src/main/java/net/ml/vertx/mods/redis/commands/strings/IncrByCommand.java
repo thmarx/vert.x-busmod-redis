@@ -39,17 +39,16 @@ public class IncrByCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 
 		Number increment = message.body.getNumber("increment");
 		checkNull(increment, "increment can not be null");
-		checkType(increment, "increment must be an integer or long", new Class<?> []{Integer.class, Long.class});
 
 		try {
 
-			Future<Long> value = context.getConnection().incrby(key, increment.longValue());
+			final Future<Long> value = context.getConnection().incrby(key, increment.longValue());
 			
 			response(message, value.get());
 		} catch (Exception e) {

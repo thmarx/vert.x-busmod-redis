@@ -39,7 +39,7 @@ public class LSetCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");		
 
@@ -48,10 +48,9 @@ public class LSetCommand extends Command {
 		
 		Number index = message.body.getNumber("index");
 		checkNull(index, "index can not be null");
-		checkType(index, "index must be an integer or long", new Class<?> []{Integer.class, Long.class});
 		
 		try {
-			Future<String> response = context.getConnection().lset(key, index.longValue(), value);
+			final Future<String> response = context.getConnection().lset(key, index.longValue(), value);
 			
 			response(message, response.get());
 		} catch (Exception e) {

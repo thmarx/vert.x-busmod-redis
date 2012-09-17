@@ -39,7 +39,7 @@ public class SetEXCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 
@@ -48,11 +48,10 @@ public class SetEXCommand extends Command {
 
 		Number seconds = message.body.getNumber("seconds");
 		checkNull(seconds, "seconds can not be null");
-		checkType(seconds, "seconds must be of type integer", new Class<?> []{Integer.class});
 		
 		try {
 
-			Future<String> response = context.getConnection().setex(key, seconds.intValue(), value);
+			final Future<String> response = context.getConnection().setex(key, seconds.intValue(), value);
 			response(message, response.get());
 		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());

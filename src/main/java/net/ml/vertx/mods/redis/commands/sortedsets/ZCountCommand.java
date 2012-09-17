@@ -40,17 +40,15 @@ public class ZCountCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
 		Object min = message.body.getField("min");
 		checkNull(min, "min can not be null");
-		checkType(min, "min must be of type string or double", new Class [] {Double.class, String.class});
 		
 		Object max = message.body.getField("max");
 		checkNull(max, "max can not be null");
-		checkType(max, "max must be of type string or double", new Class [] {Double.class, String.class});
 		
 		try {
 			

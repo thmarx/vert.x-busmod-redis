@@ -42,14 +42,14 @@ public class BRPopCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		JsonArray keys = message.body.getArray("keys");
 		checkNull(keys, "keys can not be null");
 		
 		Number timeout = message.body.getNumber("timeout", 0);
 		
 		try {
-			Future<KeyValue<String, String>> values = context.getConnection().brpop(timeout.intValue(), getStringArray(keys));
+			final Future<KeyValue<String, String>> values = context.getConnection().brpop(timeout.intValue(), getStringArray(keys));
 			KeyValue<String, String> value = values.get();
 			
 			

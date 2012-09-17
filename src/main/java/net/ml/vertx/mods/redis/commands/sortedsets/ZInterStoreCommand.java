@@ -43,7 +43,7 @@ public class ZInterStoreCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		JsonArray keys = message.body.getArray("keys");
 		checkNull(keys, "keys can not be null");
 

@@ -40,7 +40,7 @@ public class SMoveCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String source = getMandatoryString("source", message);
 		checkNull(source, "source can not be null");
 		
@@ -51,7 +51,7 @@ public class SMoveCommand extends Command {
 		checkNull(member, "member can not be null");
 		
 		try {
-			Future<Boolean> response = context.getConnection().smove(source, destination, member);
+			final Future<Boolean> response = context.getConnection().smove(source, destination, member);
 
 			response(message, response.get());
 		} catch (Exception e) {

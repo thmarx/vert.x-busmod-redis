@@ -41,14 +41,14 @@ public class MGetCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		JsonArray keys = message.body.getArray("keys");
 		
 		checkNull(keys, "keys can not be null");
 		
 		try {
 			
-			Future<List<String>> response = context.getConnection().mget(getStringArray(keys));
+			final Future<List<String>> response = context.getConnection().mget(getStringArray(keys));
 			
 			List<String> values = response.get();
 			JsonArray result;

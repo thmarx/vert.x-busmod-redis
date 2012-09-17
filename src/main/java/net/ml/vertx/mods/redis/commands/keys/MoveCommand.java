@@ -39,17 +39,16 @@ public class MoveCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 
 		Number index = message.body.getNumber("index");
 		checkNull(index, "index can not be null");
-		checkType(index, "index must be an integer", new Class<?> []{Integer.class});
 
 		try {
 
-			Future<Boolean> value = context.getConnection().move(key, index.intValue());
+			final Future<Boolean> value = context.getConnection().move(key, index.intValue());
 			response(message, value.get());
 			
 		} catch (Exception e) {

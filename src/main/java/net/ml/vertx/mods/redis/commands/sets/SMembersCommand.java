@@ -42,13 +42,13 @@ public class SMembersCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
 		
 		try {
-			Future<Set<String>> response = context.getConnection().smembers(key);
+			final Future<Set<String>> response = context.getConnection().smembers(key);
 			Set<String> response_values = response.get(); 
 
 			JsonArray keys_json;

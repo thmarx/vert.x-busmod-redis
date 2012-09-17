@@ -19,6 +19,7 @@ import net.ml.vertx.mods.redis.CommandContext;
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
 
+import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonObject;
 
@@ -37,15 +38,15 @@ public class SelectCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		Number index = message.body.getNumber("index");
 
 		checkNull(index, "index can not be null");
-		checkType(index, "index must be an integer", new Class<?> []{Integer.class});
-
+		
 		try {
 
 			String response = context.getConnection().select(index.intValue());
+			
 			response(message, response);
 			
 		} catch (Exception e) {

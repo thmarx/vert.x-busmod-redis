@@ -40,7 +40,7 @@ public class LInsertCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "keys can not be null");
 		
@@ -56,7 +56,7 @@ public class LInsertCommand extends Command {
 		
 		try {
 			
-			Future<Long> response = context.getConnection().linsert(key, before, pivot, value);
+			final Future<Long> response = context.getConnection().linsert(key, before, pivot, value);
 			
 			response(message, response.get());
 		} catch (Exception e) {

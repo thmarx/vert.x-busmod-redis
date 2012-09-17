@@ -39,7 +39,7 @@ public class ZIncrByCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
@@ -50,10 +50,9 @@ public class ZIncrByCommand extends Command {
 		
 		Number increment = message.body.getNumber("increment");
 		checkNull(increment, "increment can not be null");
-		checkType(increment, "increment must be of type double", new Class<?> []{Double.class});
 		
 		try {
-			Future<Double> value = context.getConnection().zincrby(key, increment.doubleValue(), member);
+			final Future<Double> value = context.getConnection().zincrby(key, increment.doubleValue(), member);
 
 			response(message, value.get());
 		} catch (Exception e) {

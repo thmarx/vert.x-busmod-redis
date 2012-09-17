@@ -40,12 +40,12 @@ public class ExistsCommand extends Command {
 	
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
 		try {
-			Future<Boolean> exists = context.getConnection().exists(key);
+			final Future<Boolean> exists = context.getConnection().exists(key);
 			
 			response(message, exists.get());
 		} catch (Exception e) {

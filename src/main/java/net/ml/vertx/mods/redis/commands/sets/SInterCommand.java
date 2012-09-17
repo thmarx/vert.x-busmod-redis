@@ -42,13 +42,13 @@ public class SInterCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		JsonArray keys = message.body.getArray("keys");
 		checkNull(keys, "keys can not be null");
 		
 		
 		try {
-			Future<Set<String>> response = context.getConnection().sinter(getStringArray(keys));
+			final Future<Set<String>> response = context.getConnection().sinter(getStringArray(keys));
 			Set<String> response_values = response.get();
 
 			JsonArray keys_json;

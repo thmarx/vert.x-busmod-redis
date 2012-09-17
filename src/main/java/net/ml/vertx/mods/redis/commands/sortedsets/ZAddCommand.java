@@ -41,7 +41,7 @@ public class ZAddCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
@@ -65,7 +65,7 @@ public class ZAddCommand extends Command {
 			}
 			
 			
-			Future<Long> response = context.getConnection().zadd(key, fieldvalues.toArray());
+			final Future<Long> response = context.getConnection().zadd(key, fieldvalues.toArray());
 			
 			response(message, response.get());
 		} catch (Exception e) {

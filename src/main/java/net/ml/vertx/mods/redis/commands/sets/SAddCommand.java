@@ -44,7 +44,7 @@ public class SAddCommand extends Command {
 	}
 
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 		
@@ -66,7 +66,7 @@ public class SAddCommand extends Command {
 				membervalues.add((String) temp);
 			}	
 			
-			Future<Long> response = context.getConnection().sadd(key,getStringArray(members));
+			final Future<Long> response = context.getConnection().sadd(key,getStringArray(members));
 			
 
 			response(message, response.get());

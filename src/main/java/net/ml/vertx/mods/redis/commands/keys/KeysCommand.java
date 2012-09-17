@@ -41,14 +41,14 @@ public class KeysCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String pattern = getMandatoryString("pattern", message);
 		checkNull(pattern, "pattern can not be null");
 		
 
 		try {
 
-			Future<List<String>> response = context.getConnection().keys(pattern);
+			final Future<List<String>> response = context.getConnection().keys(pattern);
 			
 			List<String> keys = response.get();
 			

@@ -39,17 +39,16 @@ public class ExpireAtCommand extends Command {
 	}
 	
 	@Override
-	public void handle(Message<JsonObject> message, CommandContext context) throws CommandException {
+	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 
 		Number timestamp = message.body.getNumber("timestamp");
 		checkNull(timestamp, "timestamp can not be null");
-		checkType(timestamp, "timestamp must be an long", new Class<?> []{Long.class});
 
 		try {
 
-			Future<Boolean> value = context.getConnection().expireat(key, timestamp.longValue());
+			final Future<Boolean> value = context.getConnection().expireat(key, timestamp.longValue());
 			response(message, value.get());
 			
 		} catch (Exception e) {
