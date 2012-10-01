@@ -2,7 +2,7 @@ load('vertx.js');
 
 var eb = vertx.eventBus;
 
-vertx.deployVerticle('redis-client', null, 1, function() {
+vertx.deployModule('ml.redis-client-v0.3', null, 1, function() {
 	java.lang.System.out.println("redis connected");
 	
 	eb.send('vertx.redis-client', {command: "set", key: 'counter', value: '1'});
@@ -16,7 +16,7 @@ vertx.deployVerticle('redis-client', null, 1, function() {
 
 
 function test_get () {
-	eb.send('vertx.redis-client', {command: "get", key: 'counter'},
+	eb.send('redis-client', {command: "get", key: 'counter'},
 	function(reply) {
 		if (reply.status === 'ok') {
 			console.log('current value: ' + reply.value);
@@ -27,7 +27,7 @@ function test_get () {
 	);
 }
 function test_incr (oldvalue) {
-	eb.send('vertx.redis-client', {command: "incr", key: 'counter'},
+	eb.send('redis-client', {command: "incr", key: 'counter'},
 	function(reply) {
 		console.log("result of incr");
 		if (reply.status === 'ok') {
@@ -39,7 +39,7 @@ function test_incr (oldvalue) {
 	);
 }
 function test_decr (oldvalue) {
-	eb.send('vertx.redis-client', {command: "decr", key: 'counter'},
+	eb.send('redis-client', {command: "decr", key: 'counter'},
 	function(reply) {
 		console.log("result of decr");
 		if (reply.status === 'ok') {
