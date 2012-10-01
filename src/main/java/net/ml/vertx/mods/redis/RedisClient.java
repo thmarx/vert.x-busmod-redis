@@ -88,7 +88,7 @@ public class RedisClient extends BusModBase implements
 	
 	private void connect () {
 		
-		address = getOptionalStringConfig("address", "vertx.redis-client");
+		address = getOptionalStringConfig("address", "redis-client");
 		host = getOptionalStringConfig("host", "localhost");
 		port = getOptionalIntConfig("port", 6379);
 
