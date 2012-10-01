@@ -35,7 +35,7 @@ For example:
     
 Let's take a look at each field in turn:
 
-* `address` The main address for the busmod. Every busmod has a main address. Defaults to `vertx.redis-client`.
+* `address` The main address for the busmod. Every busmod has a main address. Defaults to `redis-client`.
 * `host` Host name or ip address of the redis serve. Defaults to `localhost`.
 * `port` Port at which the redis server is listening. Defaults to `27017`.
 
