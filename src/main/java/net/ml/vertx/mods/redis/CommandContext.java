@@ -24,5 +24,5 @@ import com.lambdaworks.redis.RedisAsyncConnection;
  * @author <a href="http://marx-labs.de">Thorsten Marx</a>
  */
 public interface CommandContext {
-public RedisAsyncConnection<String, String> getConnection ();
+	public RedisAsyncConnection<String, String> getConnection ();
 }

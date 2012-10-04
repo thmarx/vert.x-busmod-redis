@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import net.ml.vertx.mods.redis.commands.Command;
 import net.ml.vertx.mods.redis.commands.CommandException;
@@ -43,6 +45,7 @@ public class RedisClient extends BusModBase implements
 		Handler<Message<JsonObject>>, CommandContext {
 
 	private static final Map<String, Command> commands = new HashMap<String, Command>();
+	private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	static {
 		if (commands.isEmpty()) {
@@ -101,7 +104,7 @@ public class RedisClient extends BusModBase implements
 		}
 	}
 
-	public void handle(Message<JsonObject> message) {
+	public void handle(final Message<JsonObject> message) {
 		String command = message.body.getString("command");
 		
 		if (command == null) {
@@ -109,22 +112,32 @@ public class RedisClient extends BusModBase implements
 			return;
 		}
 		
-		Command commandHandler = commands.get(command.toLowerCase());
+		final Command commandHandler = commands.get(command.toLowerCase());
 
 		if (commandHandler != null) {
-			try {
-				commandHandler.handle(message, this);
-			} catch (CommandException e) {
-				sendError(message, e.getMessage());
-			}
+			
+			executor.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						commandHandler.handle(message, getRedisClient());
+					} catch (CommandException e) {
+						sendError(message, e.getMessage());
+					}
+				}
+			});
 		} else {
 			sendError(message, "Invalid command: " + command);
-			return;
 		}
 	}
 
 	@Override
 	public RedisAsyncConnection<String, String> getConnection() {
 		return connection;
+	}
+	
+	public RedisClient getRedisClient () {
+		return this;
 	}
 }
