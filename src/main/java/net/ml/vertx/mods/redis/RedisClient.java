@@ -45,7 +45,6 @@ public class RedisClient extends BusModBase implements
 		Handler<Message<JsonObject>>, CommandContext {
 
 	private static final Map<String, Command> commands = new HashMap<String, Command>();
-	private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	static {
 		if (commands.isEmpty()) {
@@ -116,17 +115,11 @@ public class RedisClient extends BusModBase implements
 
 		if (commandHandler != null) {
 			
-			executor.execute(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						commandHandler.handle(message, getRedisClient());
-					} catch (CommandException e) {
-						sendError(message, e.getMessage());
-					}
-				}
-			});
+			try {
+				commandHandler.handle(message, getRedisClient());
+			} catch (CommandException e) {
+				sendError(message, e.getMessage());
+			}
 		} else {
 			sendError(message, "Invalid command: " + command);
 		}

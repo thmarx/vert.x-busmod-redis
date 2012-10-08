@@ -2,7 +2,7 @@ load('vertx.js');
 
 var eb = vertx.eventBus;
 
-vertx.deployModule('ml.redis-client-v0.3', null, 1, function() {
+vertx.deployModule('de.marx-labs.redis-client-v0.3', null, 1, function() {
 	java.lang.System.out.println("redis connected");
 	
 	test_exists();
