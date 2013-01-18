@@ -36,7 +36,7 @@ function testSet() {
 
 tu.registerTests(this);
 var persistorConfig = {address: 'test.persistor', db_name: 'test_db'}
-vertx.deployModule('vertx.redis-client-v0.2', persistorConfig, 1, function() {	
+vertx.deployModule('de.marx-labs.redis-client-v0.4', persistorConfig, 1, function() {	
   tu.appReady();
 });
 
