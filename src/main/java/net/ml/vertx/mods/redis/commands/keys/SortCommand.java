@@ -15,6 +15,7 @@
  */
 package net.ml.vertx.mods.redis.commands.keys;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -31,70 +32,51 @@ import com.lambdaworks.redis.SortArgs;
 /**
  * SortCommand
  * <p>
- * 
+ *
  * @author <a href="http://marx-labs.de">Thorsten Marx</a>
  */
 public class SortCommand extends Command {
-	
+
 	public static final String COMMAND = "sort";
 
 	public SortCommand () {
 		super(COMMAND);
 	}
-	
+
 	@Override
 	public void handle(final Message<JsonObject> message, CommandContext context) throws CommandException {
 		String key = getMandatoryString("key", message);
 		checkNull(key, "key can not be null");
 
-		String resultkey = getMandatoryString("resultkey", message);
-		
-		
-
-
+		String resultKey = getMandatoryString("resultkey", message);
 		try {
-			// TODO: please refactor
+			SortArgs sortArgs = getSortingParams(message);
 
-			Future<List<String>> resultFuture = null;
-			
-			if (resultkey != null) {
-				
-				handleStore(message, context, key, resultkey);
-				return;
-			}
-			
-			SortArgs sorting = getSortingParams(message);
-			
-			if (sorting != null) {
-				resultFuture = context.getConnection().sort(key, sorting);
+			if(resultKey == null) {
+				final Future<List<String>> value = context.getConnection().sort(key, sortArgs);
+
+				JsonArray response = new JsonArray(new ArrayList<Object>(value.get()));
+				response(message, response);
 			} else {
-				resultFuture = context.getConnection().sort(key);
-			}
-			List<String> values = resultFuture.get();
-			
-			JsonArray result = null;
-			if (values != null && !values.isEmpty()) {
-				result = new JsonArray(values.toArray());
-			} else {
-				result = new JsonArray();
+				final Future<Long> storeResult = context.getConnection().sortStore(key, sortArgs, resultKey);
+				response(message, storeResult.get());
 			}
 
-			response(message, result);
-			
 		} catch (Exception e) {
 			sendError(message, e.getLocalizedMessage());
 		}
 	}
-	
+
 	private SortArgs getSortingParams (Message<JsonObject> message) {
 		SortArgs params = new SortArgs();
 		boolean hasParams = false;
-		
+
 		boolean alpha = message.body.getBoolean("alpha", false);
 		if (alpha) {
 			params.alpha();
 			hasParams = true;
 		}
+
 		String order = message.body.getString("order", null);
 		if (order != null && order.equalsIgnoreCase("asc")) {
 			params.asc();
@@ -103,33 +85,30 @@ public class SortCommand extends Command {
 			params.desc();
 			hasParams = true;
 		}
-		
+
 		String by = message.body.getString("by", null);
 		if (by != null) {
 			params.by(by);
 			hasParams = true;
 		}
+
+		String get = message.body.getString("get", null);
+		if (get != null) {
+			params.get(get);
+			hasParams = true;
+		}
+
 		Number start = message.body.getNumber("start");
 		Number count = message.body.getNumber("count");
 		if ((start != null && start instanceof Integer) && (count != null && count instanceof Integer)) {
 			params.limit(start.intValue(), count.intValue());
 			hasParams = true;
 		}
+
 		if (!hasParams) {
 			return null;
 		}
+
 		return params;
 	}
-	
-	private void handleStore (Message<JsonObject> message, CommandContext context, String key, String resultkey) throws Exception {
-		Future<Long> storeResult = null;
-		SortArgs sorting = getSortingParams(message);
-		
-		storeResult = context.getConnection().sortStore(key, sorting, resultkey);
-		
-		
-		response(message, storeResult.get());
-	}
-	
-	
 }

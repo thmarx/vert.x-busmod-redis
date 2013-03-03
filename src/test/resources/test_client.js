@@ -21,10 +21,11 @@ var tu = new TestUtils();
 
 var eb = vertx.eventBus;
 
+
 function testSet() {
   eb.send('test.persistor', {
     command: 'set',
-    key : "name",
+    key : "test:name",
     value : "test"
   }, function(reply) {
     tu.azzert(reply.status === 'ok');
@@ -32,11 +33,46 @@ function testSet() {
   });
 }
 
+function testSort(){
+  eb.send('test.persistor', {
+    command: 'sort',
+    key: 'test:names',
+    alpha: true,
+    by: 'test:names:*',
+    get: 'test:names:*',
+    start: 0,
+    count: 2,
+    order: 'desc'
+  }, function(reply){
+    tu.azzert(reply.status === 'ok');
+    tu.azzert(reply.value[0] === 'Ringo');
+    tu.azzert(reply.value[1] === 'Paul');
+    tu.azzert(reply.value.length === 2);
+    tu.testComplete();
+  });
+}
 
+function testStoredSort(){
+  eb.send('test.persistor', {
+    command: 'sort',
+    key: 'test:names',
+    alpha: true,
+    by: 'test:names:*',
+    get: 'test:names:*',
+    start: 0,
+    count: 2,
+    order: 'desc',
+    resultkey: 'test:names:sorted'
+  }, function(reply){
+    tu.azzert(reply.status === 'ok');
+    tu.testComplete();
+  });
+}
 
 tu.registerTests(this);
 var persistorConfig = {address: 'test.persistor', db_name: 'test_db'}
-vertx.deployModule('de.marx-labs.redis-client-v0.4', persistorConfig, 1, function() {	
+vertx.deployModule('de.marx-labs.redis-client-v0.4', persistorConfig, 1, function() {
+  load('test_data.js');
   tu.appReady();
 });
 
