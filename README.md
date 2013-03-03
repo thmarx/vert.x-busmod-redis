@@ -342,8 +342,6 @@ Example response:
 
 ###### Sort
 
-CURRENTLY NOT SUPPORTED
-
 Sort the elements in a list, set or sorted set
 
 Return : Multi-bulk reply: list of sorted elements.

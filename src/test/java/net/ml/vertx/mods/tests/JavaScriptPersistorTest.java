@@ -42,7 +42,12 @@ public class JavaScriptPersistorTest extends TestBase {
     startTest(getMethodName());
   }
 
-  
+  @Test
+  public void testSort() throws Exception {
+    startTest(getMethodName());
+  }
+
+
 
 }
 
