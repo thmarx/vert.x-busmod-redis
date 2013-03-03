@@ -58,9 +58,7 @@ public class SortCommand extends Command {
 				JsonArray response = new JsonArray(new ArrayList<Object>(value.get()));
 				response(message, response);
 			} else {
-				Future<Long> storeResult = null;
-
-				storeResult = context.getConnection().sortStore(key, sortArgs, resultKey);
+				final Future<Long> storeResult = context.getConnection().sortStore(key, sortArgs, resultKey);
 				response(message, storeResult.get());
 			}
 
@@ -113,5 +111,4 @@ public class SortCommand extends Command {
 
 		return params;
 	}
-
 }
