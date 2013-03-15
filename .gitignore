@@ -5,3 +5,7 @@ target/
 build/
 bin
 .gradle
+*.iml
+*.ipr
+*.iws
+.idea/
