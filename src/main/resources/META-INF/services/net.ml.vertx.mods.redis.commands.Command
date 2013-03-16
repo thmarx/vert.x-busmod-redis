@@ -62,7 +62,7 @@ net.ml.vertx.mods.redis.commands.sets.SRemCommand
 net.ml.vertx.mods.redis.commands.sets.SUnionCommand
 net.ml.vertx.mods.redis.commands.sets.SUnionStoreCommand
 
-#net.ml.vertx.mods.redis.commands.sortedsets.ZAddCommand
+net.ml.vertx.mods.redis.commands.sortedsets.ZAddCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZCardCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZCountCommand
 net.ml.vertx.mods.redis.commands.sortedsets.ZIncrByCommand
